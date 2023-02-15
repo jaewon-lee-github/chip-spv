@@ -32,6 +32,7 @@
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/CommandLine.h"
+#include "llvm/IR/Module.h"
 
 #include <fstream>
 #include <optional>
@@ -112,7 +113,7 @@ static bool emitLoweredNames(Module &M) {
 
 PreservedAnalyses HipEmitLoweredNamesPass::run(Module &M,
                                                ModuleAnalysisManager &AM) {
-
+  // M.dump();
   return emitLoweredNames(M) ? PreservedAnalyses::none()
                              : PreservedAnalyses::all();
 }

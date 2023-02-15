@@ -1155,6 +1155,32 @@ hipError_t CHIPContext::free(void *Ptr) {
   return hipSuccess;
 }
 
+void* CHIPContext::createMemAllocData(void **ptr, size_t size) {
+  return new CHIPMemAllocData(ptr, size, this);
+}
+
+hipStreamCallback_t CHIPContext::getMemAllocCallback() {
+  return CHIPMemAllocData::CallbackFunc;
+}
+
+void* CHIPContext::createMemFreeData(void *ptr) {
+  return new CHIPMemFreeData(ptr, this);
+}
+
+hipStreamCallback_t CHIPContext::getMemFreeCallback() {
+  return CHIPMemFreeData::CallbackFunc;
+}
+
+void CHIPMemAllocData::CallbackFunc(hipStream_t stream, hipError_t status, void* userData) {
+  CHIPMemAllocData* data = (CHIPMemAllocData*)userData;
+  * data->Ptr = data->Ctx->allocate(data->Size, hipMemoryTypeDevice);
+}
+
+void CHIPMemFreeData::CallbackFunc(hipStream_t stream, hipError_t status, void* userData) {
+  CHIPMemFreeData* data = (CHIPMemFreeData*)userData;
+  data->Ctx->free(data->Ptr);
+}
+
 // CHIPBackend
 //*************************************************************************************
 int CHIPBackend::getPerThreadQueuesActive() {

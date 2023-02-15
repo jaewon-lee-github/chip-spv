@@ -171,6 +171,29 @@ public:
   }
 };
 
+class CHIPMemAllocData {
+protected:
+  void** Ptr;
+  size_t Size;
+  CHIPContext* Ctx;
+  
+public:
+  CHIPMemAllocData(void** ptr, size_t size, CHIPContext* ctx) : Ptr(ptr), Size(size), Ctx(ctx) {};
+
+  static void CallbackFunc(hipStream_t stream, hipError_t status, void* userData);
+};
+
+class CHIPMemFreeData {
+protected:
+  void* Ptr;
+  CHIPContext* Ctx;
+  
+public:
+  CHIPMemFreeData(void* ptr, CHIPContext* ctx) : Ptr(ptr), Ctx(ctx) {};
+
+  static void CallbackFunc(hipStream_t stream, hipError_t status, void* userData);
+};
+
 class CHIPEventMonitor;
 
 class CHIPQueueFlags {
@@ -1604,7 +1627,7 @@ public:
    * @return false
    */
   virtual void freeImpl(void *Ptr) = 0;
-
+  
   /**
    * @brief Get the flags set on this context
    *
@@ -1639,6 +1662,20 @@ public:
       // TODO hipCtx - shuold call overlaoded destructor
     }
   }
+
+  /**
+   * @brief Allocate memory asynchronously on stream 
+   */
+  void* createMemAllocData(void **ptr, size_t size);
+
+  hipStreamCallback_t getMemAllocCallback();
+  
+  /**
+   * @brief Free memory asynchronously on stream
+   */
+  void* createMemFreeData(void *ptr);
+
+  hipStreamCallback_t getMemFreeCallback();
 };
 
 /**
@@ -1845,7 +1882,7 @@ public:
    * @return CHIPQueue* return queue or nullptr if not found
    */
   CHIPQueue *findQueue(CHIPQueue *ChipQueue);
-
+  
   /**
    * @brief Add a CHIPModule to every initialized device
    *

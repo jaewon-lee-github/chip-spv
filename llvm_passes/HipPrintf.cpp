@@ -49,6 +49,7 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/Module.h"
 #include "llvm/Pass.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
@@ -295,7 +296,8 @@ static Function* getCalledFunction(CallInst *CI, const LLVMContext &Ctx) {
 
 PreservedAnalyses HipPrintfToOpenCLPrintfPass::run(Module &Mod,
                                                    ModuleAnalysisManager &AM) {
-
+  LLVM_DEBUG(dbgs() << "Found printf decl: "; Mod.dump());
+ 
   M_ = &Mod;
   LiteralArgs_.clear();
 
@@ -341,6 +343,7 @@ PreservedAnalyses HipPrintfToOpenCLPrintfPass::run(Module &Mod,
   bool Modified = false;
 
   for (auto &F : Mod) {
+    
     SmallPtrSet<Instruction *, 8> EraseList;
     for (auto &BB : F) {
       for (auto &I : BB) {

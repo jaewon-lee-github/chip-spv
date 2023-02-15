@@ -199,6 +199,9 @@ protected:
 
   void initializeCmdListImm();
 
+  // The list of callbacks  
+  // std::list<CHIPCallbackDataLevel0 *> callbacks;
+  
 public:
   ze_command_list_handle_t getCmdList();
   size_t getMaxMemoryFillPatternSize() {
@@ -503,6 +506,51 @@ public:
 
   CHIPModuleLevel0 *compile(const SPVModule &Src) override;
 };
+
+/*
+class CHIPStreamCallbackDataLevel0 {
+protected:
+  hipStream_t Stream;
+  ze_event_pool_handle_t eventPool;
+  ze_event_handle_t waitEvent;
+  ze_event_handle_t signalEvent;
+  ze_event_handle_t waitEvent2;
+  hipError_t Status;
+  void *UserData;
+  hipStreamCallback_t Callback;
+
+public:
+  // Initialize call back event on Level 0 queue
+  bool initialize(hipStream_t Stream);
+
+  // Execute the callback
+  virtual bool execute() = 0;
+};
+
+class CHIPMemoryAllocAsyncLevel0 : public CHIPStreamCallbackDataLevel0 {
+protected:
+  void** Ptr;
+  size_t Size;
+
+public:
+  CHIPMemoryAllocAsyncLevel0(void** ptr, size_t size) : Ptr(ptr), Size(size) {};
+
+  // Execute the callback
+  virtual bool execute();
+};
+
+
+class CHIPMemoryFreeAsyncLevel0 : public CHIPStreamCallbackDataLevel0 {
+protected:
+  void* Ptr;
+
+public:
+  CHIPMemoryAllocAsyncLevel0(void* ptr) : Ptr(ptr) {};
+
+  // Execute the callback  
+  virtual bool execute();
+};
+*/
 
 class CHIPBackendLevel0 : public CHIPBackend {
 

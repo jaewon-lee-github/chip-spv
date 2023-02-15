@@ -503,6 +503,7 @@ public:
   HipDynMemExternReplacePass() : ModulePass(ID) {}
 
   bool runOnModule(Module &M) override {
+    // M.dump();
     return transformDynamicShMemVarsImpl(M);
   }
 

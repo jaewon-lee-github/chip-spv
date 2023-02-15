@@ -144,12 +144,54 @@ hipError_t hipDeviceSetMemPool(int device, hipMemPool_t mem_pool) {
 hipError_t hipDeviceGetMemPool(hipMemPool_t *mem_pool, int device) {
   UNIMPLEMENTED(hipErrorNotSupported);
 }
-hipError_t hipMallocAsync(void **dev_ptr, size_t size, hipStream_t stream) {
-  UNIMPLEMENTED(hipErrorNotSupported);
+
+hipError_t hipMallocAsync(void **Dev_Ptr, size_t Size, hipStream_t Stream) {
+  // UNIMPLEMENTED(hipErrorNotSupported);
+  CHIP_TRY
+  CHIPInitialize();
+  NULLCHECK(Dev_Ptr);
+
+  if (Size == 0) {
+    *Dev_Ptr = nullptr;
+    RETURN(hipSuccess);
+  }
+  
+ auto ChipQueue = static_cast<CHIPQueue *>(Stream);
+  ChipQueue = Backend->findQueue(ChipQueue);
+  if (ChipQueue->getCaptureStatus() != hipStreamCaptureStatusNone) {
+    ChipQueue->setCaptureStatus(hipStreamCaptureStatusInvalidated);
+    RETURN(hipErrorStreamCaptureInvalidated);
+  }
+
+  ChipQueue->addCallback(Backend->getActiveContext()->getMemAllocCallback(),
+			 Backend->getActiveContext()->createMemAllocData(Dev_Ptr, Size));
+      
+  CHIP_CATCH
 }
-hipError_t hipFreeAsync(void *dev_ptr, hipStream_t stream) {
-  UNIMPLEMENTED(hipErrorNotSupported);
+
+hipError_t hipFreeAsync(void *Dev_Ptr, hipStream_t Stream) {
+  // UNIMPLEMENTED(hipErrorNotSupported);
+  CHIP_TRY
+  CHIPInitialize();
+  NULLCHECK(Dev_Ptr);
+
+  if (Dev_Ptr == nullptr) {
+    RETURN(hipErrorInvalidValue);
+  }
+
+  auto ChipQueue = static_cast<CHIPQueue *>(Stream);
+  ChipQueue = Backend->findQueue(ChipQueue);
+  if (ChipQueue->getCaptureStatus() != hipStreamCaptureStatusNone) {
+    ChipQueue->setCaptureStatus(hipStreamCaptureStatusInvalidated);
+    RETURN(hipErrorStreamCaptureInvalidated);
+  }
+
+  ChipQueue->addCallback(Backend->getActiveContext()->getMemFreeCallback(),
+			 Backend->getActiveContext()->createMemFreeData(Dev_Ptr));
+
+  CHIP_CATCH
 }
+
 hipError_t hipMemPoolSetAttribute(hipMemPool_t mem_pool, hipMemPoolAttr attr,
                                   void *value) {
   UNIMPLEMENTED(hipErrorNotSupported);
