@@ -21,6 +21,7 @@
 #include "HipGlobalVariables.h"
 #include "HipTextureLowering.h"
 #include "HipTaskSync.h"
+#include "HipKernelParamCopy.h"
 
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
@@ -96,7 +97,9 @@ static void addFullLinkTimePasses(ModulePassManager &MPM) {
   MPM.addPass(HipTextureLoweringPass());
 
   MPM.addPass(HipTaskSyncPass());
-  
+
+  MPM.addPass(HipKernelParamCopyPass());
+
   // TODO: Update printf pass for HIP-Clang 14+. It now triggers an assert:
   //
   //  Assertion `isa<X>(Val) && "cast<Ty>() argument of incompatible type!"'

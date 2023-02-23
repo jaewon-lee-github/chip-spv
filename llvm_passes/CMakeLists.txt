@@ -48,7 +48,7 @@ endif()
 
 add_definitions(${LLVM_DEFINITIONS})
 
-include_directories(${LLVM_INCLUDE_DIRS})
+include_directories(${LLVM_INCLUDE_DIRS} ${CMAKE_BINARY_DIR})
 
 if(NOT LLVM_ENABLE_RTTI)
   add_compile_options("-fno-rtti")
@@ -76,7 +76,7 @@ endif()
 if("${LLVM_VERSION}" VERSION_GREATER_EQUAL 11.0)
   add_library(LLVMHipPasses MODULE HipPasses.cpp
     HipDynMem.cpp HipStripUsedIntrinsics.cpp HipDefrost.cpp
-    HipPrintf.cpp HipGlobalVariables.cpp HipTextureLowering.cpp HipAbort.cpp HipTaskSync.cpp)
+    HipPrintf.cpp HipGlobalVariables.cpp HipTextureLowering.cpp HipAbort.cpp HipTaskSync.cpp HipKernelParamCopy.cpp)
 
   if("${LLVM_VERSION}" VERSION_GREATER_EQUAL 14.0)
     set_target_properties(LLVMHipPasses PROPERTIES
