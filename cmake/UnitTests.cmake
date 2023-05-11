@@ -13,10 +13,6 @@ list(APPEND DGPU_LEVEL0_FAILED_TESTS " ")
 list(APPEND CPU_POCL_FAILED_TESTS " ") 
 list(APPEND GPU_POCL_FAILED_TESTS " ")  # TODO
 
-list(APPEND FAILING_FOR_ALL "Unit_hipMultiThreadStreams1_AsyncSync") # Pinned Memory Missing mutex?
-list(APPEND FAILING_FOR_ALL "Unit_hipMultiThreadStreams1_AsyncAsync") # Pinned Memory Missing mutex?
-list(APPEND FAILING_FOR_ALL "Unit_hipMultiThreadStreams1_AsyncSame") # Pinned Memory Missing mutex?
-list(APPEND FAILING_FOR_ALL "Unit_hipMultiThreadStreams2") # Pinned Memory Missing mutex?
 list(APPEND FAILING_FOR_ALL "RecursiveGaussian") # Flaky
 list(APPEND FAILING_FOR_ALL "Unit_deviceFunctions_CompileTest___double2float_rd_float") # Unimplemented
 list(APPEND FAILING_FOR_ALL "Unit_deviceFunctions_CompileTest___double2float_rn_float") # Unimplemented
