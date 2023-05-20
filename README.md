@@ -15,8 +15,8 @@ This project is an integration of [HIPCL](https://github.com/cpc/hipcl) and
 
 * Cmake >= 3.16.0
 * Clang 14, 15 or 16
-  * Can be installed, for example, by adding the [LLVM's Debian/Ubuntu repository](https://apt.llvm.org/) and installing packages 'clang-15 llvm-15 clang-tools-15'. *NOTE*: The Ubuntu clang package does not provide a symlink for `clang++`, only `clang++-14` is availble. If you plan on using `hipcc` you will need to make this symlink manually to ensure that `clang++` is available in `HIP_CLANG_PATH`. 
-  * Some functionalities currently require patches that are not yet upstreamed to LLVM. They are on top of the branch [here](https://github.com/CHIP-SPV/llvm-project/tree/chipspv-llvm-15-patches).
+  * Can be installed, for example, by adding the [LLVM's Debian/Ubuntu repository](https://apt.llvm.org/) and installing packages 'clang-15 llvm-15 clang-tools-15'.  
+  * *NOTE*: Some features currently require patches that are not yet upstreamed to LLVM. They are on top of the branch [here](https://github.com/CHIP-SPV/llvm-project/tree/chipspv-llvm-15-patches).
 * SPIRV-LLVM-Translator from a branch matching to the clang version:
   (e.g. llvm\_release\_150 for Clang 15.0)
   [llvm-spirv](https://github.com/KhronosGroup/SPIRV-LLVM-Translator).
@@ -29,6 +29,34 @@ This project is an integration of [HIPCL](https://github.com/cpc/hipcl) and
 * For HIP-SYCL and HIP-MKL Interoperability
   * [oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html)
 
+## Compiling Clang
+
+It's recommended to use the latest version of LLVM and use CHIP-SPV fork of SPIRV-LLVM-Translator.
+```bash
+git clone https://github.com/llvm/llvm-project.git
+cd llvm-project
+git checkout -t origin/release/16.x
+cd llvm/projects
+git clone https://github.com/CHIP-SPV/SPIRV-LLVM-Translator.git
+cd SPIRV-LLVM-Translator
+git checkout -t origin/chipspv-llvm-16-patches
+cd ../../
+
+mkdir build
+cd build
+
+# DLLVM_ENABLE_PROJECTS="clang;openmp" OpenMP is optional but many apps use it
+# DLLVM_TARGETS_TO_BUILD Speed up compilation but building only the necessary CPU host target
+# CMAKE_INSTALL_PREFIX Where to install LLVM
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_PROJECTS="clang;openmp" \
+  -DLLVM_TARGETS_TO_BUILD=X86 \
+  -DCMAKE_INSTALL_PREFIX=/home/pvelesko/install/llvm/16.0 
+
+```
+
+```bash
 ## Downloading Sources
 
 ```bash
@@ -51,6 +79,7 @@ make install
 
 Useful options:
  * `-DCMAKE_BUILD_TYPE=<Debug(default), Release, RelWithDebInfo>`
+ * `-DBUILD_SAMPLES=<ON(default), OFF>` # Samples are built by default, unless you set this to OFF
 
 The documentation will be placed in `doxygen/html`.
 
