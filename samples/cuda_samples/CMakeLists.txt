@@ -94,6 +94,17 @@ add_cuda_sample(cuda-reduction  6_Advanced/reduction reduction.cpp  reduction_ke
 add_cuda_sample(cuda-fastwalsh  6_Advanced/fastWalshTransform fastWalshTransform.cu  fastWalshTransform_gold.cpp)
 
 ############################
+## 6_Warp
+add_cuda_sample(cuda-shfl_up  7_Warp/shfl_up shfl_up.cu)
+add_cuda_sample(cuda-shfl_down  7_Warp/shfl_down shfl_down.cu)
+add_cuda_sample(cuda-shfl_xor 7_Warp/shfl_xor shfl_xor.cu)
+add_cuda_sample(cuda-shfl 7_Warp/shfl shfl.cu)
+add_cuda_sample(cuda-all 7_Warp/all all.cu)
+add_cuda_sample(cuda-any 7_Warp/any any.cu)
+add_cuda_sample(cuda-ballot 7_Warp/ballot ballot.cu)
+
+
+############################
 
 # if(NOT ENABLE_FAILING_TESTS)
 #   ##### when run, sometimes fails sometimes passes TODO investigate
